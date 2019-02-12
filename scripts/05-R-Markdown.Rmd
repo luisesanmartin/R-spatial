@@ -1,0 +1,54 @@
+---
+title: "R Markdown and Maps!"
+author: "Luis Eduardo San Martin"
+date: "February 12th, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Used
+
+Here is the data I used in this analysis:
+
+- Library data (points)
+- Community area data (polygons)
+
+Why I used this data?
+
+1. They have different geometries
+2. I could do an interesting, challenging exercise with it
+3. They produced a cool map
+
+## Maps we produced - reading map images
+
+
+
+## Loading data and plotting
+```{r include = FALSE}
+library(sf)
+library(ggplot2)
+library(dplyr)
+```
+Loading data:
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+libraries <- st_read("https://data.cityofchicago.org/resource/psqp-6rmg.geojson")
+areas <- st_read("https://data.cityofchicago.org/resource/igwz-8jzy.geojson")
+```
+Plotting: Chicago community areas and public libraries
+```{r}
+ggplot() +
+  geom_sf(data = areas) +
+  geom_sf(data = libraries)
+```
+
+Highlighting community areas without maps:
+```{r }
+intersects <- st_intersects(areas, libraries)
+no_lib <- filter(areas, lengths(intersects) == 0)
+ggplot() +
+  geom_sf(data = areas) +
+  geom_sf(data = no_lib, fill = "red") +
+  geom_sf(data = libraries)
